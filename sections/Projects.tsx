@@ -26,7 +26,7 @@ const Projects: React.FC = () => {
       className="relative c-space section-spacing"
     >
       <h2 className="text-heading">My Projects</h2>
-      <div className="bg-gradient-to-r from-transparent via-neutral-700 to-transparent mt-12 h-px w-full" />
+      <div className="bg-linear-to-r from-transparent via-neutral-700 to-transparent mt-12 h-px w-full" />
       {myProjects.map((project) => (
         <ProjectCard key={project.id} setPreview={setPreview} {...project} />
       ))}
@@ -34,7 +34,7 @@ const Projects: React.FC = () => {
         <motion.img
           src={preview}
           alt="preview"
-          className="fixed top-0 left-0 z-50 object-cover rounded-lg shadow-lg h-56 pointer-events-none w-80"
+          className="fixed top-0 left-0 z-50 object-cover rounded-lg shadow-lg h-46 pointer-events-none w-80"
           style={{
             x: springX,
             y: springY,

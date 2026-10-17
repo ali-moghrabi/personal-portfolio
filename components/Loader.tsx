@@ -1,15 +1,19 @@
 "use client";
 
-import React from "react";
-import { Html, useProgress } from "@react-three/drei";
+import { useProgress } from "@react-three/drei";
 
-const Loader: React.FC = () => {
-  const { progress } = useProgress();
+export default function Loader() {
+  const { active, progress } = useProgress();
+  const done = !active && progress === 100;
+
   return (
-    <Html center className="text-xl font-normal text-center">
-      {progress}% Loaded
-    </Html>
+    <div
+      aria-live="polite"
+      className={`pointer-events-none absolute inset-0 grid place-items-center text-xl font-normal transition-opacity duration-500 ${
+        done ? "opacity-0" : "opacity-100"
+      }`}
+    >
+      {!done && <span>{Math.round(progress)}% Loaded</span>}
+    </div>
   );
-};
-
-export default Loader;
+}

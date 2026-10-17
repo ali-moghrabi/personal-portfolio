@@ -1,24 +1,43 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 "use client";
 
-import React, { JSX, useEffect, useRef } from "react";
-import { useGLTF, useAnimations } from "@react-three/drei";
+import { useEffect, useRef } from "react";
+import type { AnimationClip, Bone, Group, Material, SkinnedMesh } from "three";
+import { useFrame, type ThreeElements } from "@react-three/fiber";
+import { useAnimations, useGLTF } from "@react-three/drei";
 import { useMotionValue, useSpring } from "motion/react";
-import { useFrame } from "@react-three/fiber";
 
-export function Astronaut(props: JSX.IntrinsicElements["group"]) {
-  const group = useRef(null);
+const MODEL = "/models/tenhun_falling_spaceman_fanart.glb";
+
+const MESHES = [
+  "Cube001_0",
+  "Cube005_0",
+  "Cube002_0",
+  "Plane_0",
+  "Cube008_0",
+  "Cube004_0",
+  "Cube003_0",
+  "Cube_0",
+  "Cube009_0",
+  "Cube011_0",
+] as const;
+type MeshName = (typeof MESHES)[number];
+
+type AstronautGLTF = {
+  nodes: Record<MeshName, SkinnedMesh> & { metarig_rootJoint: Bone };
+  materials: { "AstronautFallingTexture.png": Material };
+  animations: AnimationClip[];
+};
+
+export function Astronaut(props: ThreeElements["group"]) {
+  const group = useRef<Group>(null);
   const { nodes, materials, animations } = useGLTF(
-    "/models/tenhun_falling_spaceman_fanart.glb"
-  );
+    MODEL,
+  ) as unknown as AstronautGLTF;
   const { actions } = useAnimations(animations, group);
 
   useEffect(() => {
-    if (animations.length > 0) {
-      actions[animations[0].name]?.play();
-    }
+    const first = animations[0];
+    if (first) actions[first.name]?.play();
   }, [actions, animations]);
 
   const yPosition = useMotionValue(5);
@@ -29,9 +48,7 @@ export function Astronaut(props: JSX.IntrinsicElements["group"]) {
   }, [ySpring]);
 
   useFrame(() => {
-    if (group.current) {
-      group.current.position.y = ySpring.get();
-    }
+    if (group.current) group.current.position.y = ySpring.get();
   });
 
   return (
@@ -40,7 +57,7 @@ export function Astronaut(props: JSX.IntrinsicElements["group"]) {
       ref={group}
       dispose={null}
       rotation={[-Math.PI / 2, -0.2, 2.2]}
-      scale={props.scale || 0.3}
+      scale={props.scale ?? 0.3}
       position={props.position}
     >
       <group name="Sketchfab_Scene">
@@ -48,80 +65,15 @@ export function Astronaut(props: JSX.IntrinsicElements["group"]) {
           <group name="Root">
             <group name="metarig">
               <primitive object={nodes.metarig_rootJoint} />
-              <skinnedMesh
-                name="Cube001_0"
-                geometry={nodes.Cube001_0.geometry}
-                material={materials["AstronautFallingTexture.png"]}
-                skeleton={nodes.Cube001_0.skeleton}
-              />
-              <skinnedMesh
-                name="Cube005_0"
-                geometry={nodes.Cube005_0.geometry}
-                material={materials["AstronautFallingTexture.png"]}
-                skeleton={nodes.Cube005_0.skeleton}
-              />
-              <skinnedMesh
-                name="Cube002_0"
-                geometry={nodes.Cube002_0.geometry}
-                material={materials["AstronautFallingTexture.png"]}
-                skeleton={nodes.Cube002_0.skeleton}
-              />
-              <skinnedMesh
-                name="Plane_0"
-                geometry={nodes.Plane_0.geometry}
-                material={materials["AstronautFallingTexture.png"]}
-                skeleton={nodes.Plane_0.skeleton}
-              />
-              <skinnedMesh
-                name="Cube008_0"
-                geometry={nodes.Cube008_0.geometry}
-                material={materials["AstronautFallingTexture.png"]}
-                skeleton={nodes.Cube008_0.skeleton}
-              />
-              <skinnedMesh
-                name="Cube004_0"
-                geometry={nodes.Cube004_0.geometry}
-                material={materials["AstronautFallingTexture.png"]}
-                skeleton={nodes.Cube004_0.skeleton}
-              />
-              <skinnedMesh
-                name="Cube003_0"
-                geometry={nodes.Cube003_0.geometry}
-                material={materials["AstronautFallingTexture.png"]}
-                skeleton={nodes.Cube003_0.skeleton}
-              />
-              <skinnedMesh
-                name="Cube_0"
-                geometry={nodes.Cube_0.geometry}
-                material={materials["AstronautFallingTexture.png"]}
-                skeleton={nodes.Cube_0.skeleton}
-              />
-              <skinnedMesh
-                name="Cube009_0"
-                geometry={nodes.Cube009_0.geometry}
-                material={materials["AstronautFallingTexture.png"]}
-                skeleton={nodes.Cube009_0.skeleton}
-              />
-              <skinnedMesh
-                name="Cube011_0"
-                geometry={nodes.Cube011_0.geometry}
-                material={materials["AstronautFallingTexture.png"]}
-                skeleton={nodes.Cube011_0.skeleton}
-              />
-              <group name="Cube001" />
-              <group name="Cube005" />
-              <group name="Cube002" />
-              <group name="Plane" />
-              <group name="Cube008" />
-              <group name="Cube004" />
-              <group name="Cube003" />
-              <group name="Cube" />
-              <group
-                name="Cube009"
-                rotation={[-2.708, 0.013, -1.447]}
-                scale={1.307}
-              />
-              <group name="Cube011" />
+              {MESHES.map((name) => (
+                <skinnedMesh
+                  key={name}
+                  name={name}
+                  geometry={nodes[name].geometry}
+                  material={materials["AstronautFallingTexture.png"]}
+                  skeleton={nodes[name].skeleton}
+                />
+              ))}
             </group>
           </group>
         </group>
@@ -130,4 +82,4 @@ export function Astronaut(props: JSX.IntrinsicElements["group"]) {
   );
 }
 
-useGLTF.preload("/models/tenhun_falling_spaceman_fanart.glb");
+useGLTF.preload(MODEL);

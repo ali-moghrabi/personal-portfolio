@@ -1,48 +1,36 @@
 "use client";
 
-import React from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 
-const Alert: React.FC<{
-  type: string;
-  text: string | null;
-}> = ({ type, text }) => {
-  const alertVariants = {
-    hidden: { opacity: 0, y: 50, scale: 0.8 },
-    visible: { opacity: 1, y: 0, scale: 1 },
-    exit: { opacity: 0, y: -50, scale: 0.8 },
-  };
+export type AlertType = "success" | "danger";
 
+export default function Alert({
+  type,
+  text,
+}: {
+  type: AlertType;
+  text: string;
+}) {
+  const danger = type === "danger";
   return (
-    <AnimatePresence>
-      <motion.div
-        className="fixed z-50 flex items-center justify-center bottom-5 right-5"
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        variants={alertVariants}
-        transition={{
-          duration: 0.3,
-          ease: "easeInOut",
-        }}
+    <motion.div
+      role={danger ? "alert" : "status"}
+      className="fixed z-50 flex items-center justify-center bottom-5 right-5 left-5 sm:left-auto"
+      initial={{ opacity: 0, y: 50, scale: 0.8 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -50, scale: 0.8 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+    >
+      <div
+        className={`${danger ? "bg-red-800" : "bg-royal"} flex items-center gap-3 p-3 leading-none text-indigo-100 rounded-md lg:rounded-full`}
       >
-        <div
-          className={`p-2 ${
-            type === "danger" ? "bg-red-800" : "bg-royal"
-          } items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex rounded-md p-5`}
+        <span
+          className={`${danger ? "bg-red-500" : "bg-lavender"} rounded-full px-2 py-1 text-xs font-semibold uppercase`}
         >
-          <p
-            className={`flex rounded=full ${
-              type === "danger" ? "bg-red-500" : "bg-lavender"
-            } uppercase px-2 py-1 text-xs font-semibold mr-3`}
-          >
-            {type === "danger" ? "Failed" : "Success"}
-          </p>
-          <p className="mr-2 text-left">{text}</p>
-        </div>
-      </motion.div>
-    </AnimatePresence>
+          {danger ? "Failed" : "Success"}
+        </span>
+        <span className="mr-2 text-left">{text}</span>
+      </div>
+    </motion.div>
   );
-};
-
-export default Alert;
+}

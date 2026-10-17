@@ -13,12 +13,12 @@ const About: React.FC = () => {
   return (
     <section id="about" className="c-space section-spacing">
       <h2 className="text-heading">About Me</h2>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-[18rem] mt-12">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-72 mt-12">
         <div className="flex items-end grid-default-color grid-1">
           <Image
             src="/assets/coding-pov.png"
             alt="coding pov"
-            className="absolute scale-[1.75] -right-[5rem] -top-[1rem] md:scale-[3] md:left-50 md:inset-y-10 lg:scale-[2.5]"
+            className="absolute scale-[1.75] -right-20 -top-4 md:scale-[3] md:left-50 md:inset-y-10 lg:scale-[2.5]"
             width={1328}
             height={813}
             quality={100}
@@ -31,7 +31,7 @@ const About: React.FC = () => {
               applications.
             </p>
           </div>
-          <div className="absolute inset-x-0 pointer-events-none -bottom-4 h-1/2 sm:h-1/3 bg-gradient-to-t from-indigo-950" />
+          <div className="absolute inset-x-0 pointer-events-none -bottom-4 h-1/2 sm:h-1/3 bg-linear-to-t from-indigo-950" />
         </div>
         <div
           ref={grid2Container}
@@ -221,7 +221,7 @@ const About: React.FC = () => {
               allow me to build robust and scalable applications
             </p>
           </div>
-          <div className="absolute inset-y-0 md:inset-y-9 w-full h-full start-[50%] md:scale-125">
+          <div className="absolute inset-y-0 md:inset-y-9 w-full h-full inset-s-[50%] md:scale-125">
             <Frameworks />
           </div>
         </div>

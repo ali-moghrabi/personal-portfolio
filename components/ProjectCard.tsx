@@ -32,7 +32,7 @@ const ProjectCard: React.FC<{
       >
         <div>
           <p className="text-2xl">{title}</p>
-          <div className="flex gap-5 mt-2 text-sand">
+          <div className="flex flex-wrap mt-2 gap-x-5 gap-y-1 text-sand">
             {tags.map((tag) => (
               <span key={tag.id}>{tag.name}</span>
             ))}
@@ -52,7 +52,7 @@ const ProjectCard: React.FC<{
           />
         </button>
       </div>
-      <div className="bg-gradient-to-r from-transparent via-neutral-700 to-transparent h-px w-full" />
+      <div className="bg-linear-to-r from-transparent via-neutral-700 to-transparent h-px w-full" />
       {open && (
         <ProjectDetails
           title={title}
