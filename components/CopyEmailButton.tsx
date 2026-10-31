@@ -1,80 +1,68 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { twMerge } from "tailwind-merge";
+import { EMAIL } from "@/constants";
 
-const CopyEmailButton: React.FC = () => {
-  const [copied, setCopied] = useState<boolean>(false);
+export default function CopyEmailButton({
+  className = "",
+}: {
+  className?: string;
+}) {
+  const [copied, setCopied] = useState(false);
 
-  const email = "amoghrabi168@gmail.com";
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), 2500);
+    return () => clearTimeout(timer);
+  }, [copied]);
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(email);
-
-    setCopied(true);
-    setTimeout(() => {
-      setCopied(false);
-    }, 3500);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopied(true);
+    } catch {
+      window.location.href = `mailto:${EMAIL}`;
+    }
   };
 
   return (
     <motion.button
       type="button"
-      onClick={copyToClipboard}
-      whileHover={{ y: -5 }}
-      whileTap={{ scale: 1.05 }}
-      className="relative px-1 py-4 text-sm text-center rounded-full font-extralight bg-primary w-48 cursor-pointer overflow-hidden"
+      onClick={copy}
+      whileHover={{ y: -3 }}
+      whileTap={{ scale: 0.97 }}
+      aria-label={
+        copied ? "Email address copied" : `Copy my email address, ${EMAIL}`
+      }
+      className={twMerge(
+        "relative h-12 w-52 cursor-pointer overflow-hidden rounded-full border border-white/10 bg-primary px-4 text-sm",
+        className,
+      )}
     >
-      <AnimatePresence mode="wait">
-        {copied ? (
-          <motion.p
-            className="flex items-center justify-center gap-2"
-            key="copied"
-            initial={{
-              opacity: 0,
-              y: -10,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            exit={{
-              opacity: 0,
-              y: -10,
-            }}
-            transition={{ duration: 0.1, ease: "easeInOut" }}
-          >
-            <Image
-              src="/assets/copy-done.svg"
-              alt="copy done"
-              width={20}
-              height={20}
-            />
-            Email Copied!
-          </motion.p>
-        ) : (
-          <motion.p
-            className="flex items-center justify-center gap-2"
-            key="copy"
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
-            transition={{ duration: 0.1 }}
-          >
-            <Image src="/assets/copy.svg" alt="copy" width={20} height={20} />
-            Copy Email Address
-          </motion.p>
-        )}
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={copied ? "copied" : "copy"}
+          className="flex items-center justify-center gap-2"
+          initial={{ opacity: 0, y: copied ? -8 : 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: copied ? 8 : -8 }}
+          transition={{ duration: 0.15 }}
+        >
+          <Image
+            src={copied ? "/assets/copy-done.svg" : "/assets/copy.svg"}
+            alt=""
+            width={18}
+            height={18}
+          />
+          {copied ? "Email copied!" : "Copy email address"}
+        </motion.span>
       </AnimatePresence>
+      <span aria-live="polite" className="sr-only">
+        {copied ? "Copied" : ""}
+      </span>
     </motion.button>
   );
-};
-
-export default CopyEmailButton;
+}

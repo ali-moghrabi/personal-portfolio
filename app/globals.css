@@ -1,8 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap");
 @import "tailwindcss";
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 4rem;
 }
 
 @theme {
@@ -30,6 +30,23 @@ html {
       transform: rotate(calc(var(--angle) * 1deg + 360deg))
         translateY(calc(var(--radius) * 1px))
         rotate(calc((var(--angle) * -1deg) - 360deg));
+    }
+  }
+  --font-sans: var(--font-funnel), ui-sans-serif, system-ui, sans-serif;
+  --animate-scroll-dot: scroll-dot 1.8s ease-in-out infinite;
+
+  @keyframes scroll-dot {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    70% {
+      transform: translateY(14px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 0;
     }
   }
   --animate-marquee: marquee 50s linear infinite;
@@ -61,9 +78,33 @@ body {
 
 body {
   background: #030412;
-  font-family: "Funnel Display", sans-serif;
+  font-family: var(--font-sans);
   color: white;
-  scroll-behavior: smooth;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-lavender) 60%, transparent);
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-lavender);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* people who asked their system for less motion get (almost) none */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .c-space {
@@ -75,7 +116,7 @@ body {
 }
 
 .section-spacing {
-  @apply min-h-screen mt-20 md:mt-30;
+  @apply mt-24 md:mt-36;
 }
 
 .text-heading {
@@ -94,12 +135,8 @@ body {
   @apply flex flex-col items-center gap-4 sm:flex-row md:gap-6 relative z-20;
 }
 
-.nav-li {
-  @apply text-neutral-400 hover:text-white max-sm:w-full max-sm:rounded-md py-2 max-sm:px-5;
-}
-
 .nav-link {
-  @apply text-lg md:text-base hover:text-white transition-colors;
+  @apply relative block rounded-md px-3 py-2 text-lg text-neutral-400 transition-colors hover:text-white aria-[current]:text-white sm:text-[15px] max-sm:w-full max-sm:hover:bg-white/5;
 }
 
 .btn {
@@ -138,9 +175,26 @@ body {
 }
 
 .field-input {
-  @apply w-full min-h-10 rounded-md px-3 py-2 text-sm bg-white/10 transition duration-200 placeholder-neutral-500 border border-white/10 mt-2;
+  @apply mt-2 w-full min-h-11 rounded-lg border border-white/10 bg-white/5 px-3.5 py-2.5 text-[15px] placeholder-neutral-500 transition duration-200 outline-none hover:border-white/20 focus:border-lavender/70 focus:bg-white/[0.07] focus:ring-3 focus:ring-lavender/20 aria-invalid:border-coral/60 aria-invalid:focus:ring-coral/20;
 }
 
-.field-input-focus {
-  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20;
+/* small label above a section title */
+.eyebrow {
+  @apply flex items-center gap-2 text-xs font-medium tracking-[0.2em] text-lavender uppercase;
+}
+
+.text-gradient {
+  @apply bg-linear-to-r from-lavender via-fuchsia to-orange bg-clip-text text-transparent;
+}
+
+.glass-card {
+  @apply rounded-3xl border border-white/10 bg-linear-to-b from-navy/80 to-midnight/80 shadow-[0_30px_80px_-30px_rgba(92,51,204,0.35)] backdrop-blur-sm;
+}
+
+.btn-primary {
+  @apply inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-radial from-lavender to-royal px-6 text-[15px] font-medium text-white shadow-[0_10px_30px_-10px_rgba(122,87,219,0.8)] transition duration-200 hover:-translate-y-0.5 hover:brightness-110 disabled:pointer-events-none disabled:opacity-60;
+}
+
+.btn-ghost {
+  @apply inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 text-[15px] font-medium text-white backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10;
 }

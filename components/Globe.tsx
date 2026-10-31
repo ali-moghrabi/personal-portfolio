@@ -55,42 +55,55 @@ export function Globe({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let width = canvas.offsetWidth;
     let phi = 0;
     let frame = 0;
-
-    const globe = createGlobe(canvas, {
-      ...config,
-      width: width * 2,
-      height: width * 2,
-    });
+    let globe: ReturnType<typeof createGlobe> | null = null;
 
     const tick = () => {
-      if (pointerStart.current === null && !reduceMotion) phi += 0.005;
-      globe.update({
+      if (pointerStart.current === null && !still) phi += 0.005;
+      globe?.update({
         phi: phi + smoothRotation.get(),
-        width: width * 2,
-        height: width * 2,
+        width: width * dpr,
+        height: width * dpr,
       });
       frame = requestAnimationFrame(tick);
     };
-    frame = requestAnimationFrame(tick);
 
-    const observer = new ResizeObserver(() => {
+    const start = () => {
+      if (!globe) {
+        globe = createGlobe(canvas, {
+          ...config,
+          devicePixelRatio: dpr,
+          width: width * dpr,
+          height: width * dpr,
+        });
+        requestAnimationFrame(() => (canvas.style.opacity = "1"));
+      }
+      if (!frame) frame = requestAnimationFrame(tick);
+    };
+    const stop = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    };
+
+    const seen = new IntersectionObserver(
+      ([entry]) => (entry.isIntersecting ? start() : stop()),
+      { rootMargin: "200px" },
+    );
+    const sizes = new ResizeObserver(() => {
       width = canvas.offsetWidth;
     });
-    observer.observe(canvas);
-
-    const fadeIn = setTimeout(() => (canvas.style.opacity = "1"), 0);
+    seen.observe(canvas);
+    sizes.observe(canvas);
 
     return () => {
-      cancelAnimationFrame(frame);
-      clearTimeout(fadeIn);
-      observer.disconnect();
-      globe.destroy();
+      stop();
+      seen.disconnect();
+      sizes.disconnect();
+      globe?.destroy();
     };
   }, [smoothRotation, config]);
 
@@ -119,8 +132,7 @@ export function Globe({
         onPointerDown={(e) => setDragging(e.clientX)}
         onPointerUp={() => setDragging(null)}
         onPointerOut={() => setDragging(null)}
-        onMouseMove={(e) => drag(e.clientX)}
-        onTouchMove={(e) => e.touches[0] && drag(e.touches[0].clientX)}
+        onPointerMove={(e) => drag(e.clientX)}
       />
     </div>
   );

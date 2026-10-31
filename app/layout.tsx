@@ -2,14 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { Funnel_Display } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Navbar from "@/sections/Navbar";
+import Providers from "@/components/Providers";
+import { SITE_URL } from "@/constants";
 import "./globals.css";
 
-const SITE_URL = "https://ali-moghrabi.vercel.app";
-
-// Self-hosted by Next: no request to Google, no layout shift
 const funnel = Funnel_Display({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
   variable: "--font-funnel",
 });
@@ -41,14 +39,6 @@ export const metadata: Metadata = {
       "Full-stack web developer building performant, user-focused web apps with React, Next.js and Node.js.",
     url: SITE_URL,
     siteName: "Ali Moghrabi Portfolio",
-    images: [
-      {
-        url: "/assets/display.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Ali Moghrabi portfolio",
-      },
-    ],
     locale: "en_US",
     type: "website",
   },
@@ -56,11 +46,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ali Moghrabi | Full Stack Web Developer",
     description: "Full-stack web developer: React, Next.js, NestJS, Node.js.",
-    images: ["/assets/display.jpg"],
   },
 };
 
-// Next 15+ wants these here, not in metadata. Zoom stays allowed (accessibility).
 export const viewport: Viewport = {
   themeColor: "#030412",
   colorScheme: "dark",
@@ -68,7 +56,6 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-// Tells Google who this site is about
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -99,14 +86,14 @@ export default function RootLayout({
       <body className="antialiased">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-primary"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-60 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-primary"
         >
           Skip to content
         </a>
-        <div className="container mx-auto max-w-7xl">
+        <Providers>
           <Navbar />
           <main id="main">{children}</main>
-        </div>
+        </Providers>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

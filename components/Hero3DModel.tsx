@@ -1,6 +1,12 @@
 "use client";
 
-import { Suspense, useSyncExternalStore } from "react";
+import {
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float } from "@react-three/drei";
 import { easing } from "maath";
@@ -23,13 +29,29 @@ function useIsMobile() {
 
 export default function Hero3DModel() {
   const isMobile = useIsMobile();
+  const box = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    if (!box.current) return;
+    const seen = new IntersectionObserver(([entry]) =>
+      setVisible(entry.isIntersecting),
+    );
+    seen.observe(box.current);
+    return () => seen.disconnect();
+  }, []);
 
   return (
-    <figure className="absolute inset-0 w-screen h-svh" aria-hidden="true">
+    <figure
+      ref={box}
+      className="absolute inset-0 w-screen h-svh"
+      aria-hidden="true"
+    >
       <Canvas
+        frameloop={visible ? "always" : "never"}
         camera={{ position: [0, 1, 3] }}
-        dpr={[1, 1.75]}
-        gl={{ antialias: true, powerPreference: "high-performance" }}
+        dpr={[1, isMobile ? 1.5 : 1.75]}
+        gl={{ antialias: !isMobile, powerPreference: "high-performance" }}
       >
         <Suspense fallback={null}>
           <Float>
@@ -38,7 +60,7 @@ export default function Hero3DModel() {
               position={isMobile ? [0, -1.5, 0] : [1.3, -1, 0]}
             />
           </Float>
-          <Rig />
+          {!isMobile && <Rig />}
         </Suspense>
       </Canvas>
       <Loader />

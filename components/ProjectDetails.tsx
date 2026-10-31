@@ -1,34 +1,49 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import Image from "next/image";
-
-type Tag = { id: number; name: string; path: string };
-
-type Props = {
-  title: string;
-  description: string;
-  subDescription: string[];
-  href: string;
-  image: string;
-  tags: Tag[];
-  closeModal: () => void;
-};
+import type { Project } from "@/constants";
 
 export default function ProjectDetails({
-  title,
-  description,
-  subDescription,
-  href,
-  image,
-  tags,
+  project,
   closeModal,
-}: Props) {
+}: {
+  project: Project;
+  closeModal: () => void;
+}) {
+  const {
+    title,
+    tagline,
+    description,
+    subDescription,
+    href,
+    logo,
+    image,
+    tags,
+  } = project;
+  const dialog = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && closeModal();
+    const opener = document.activeElement as HTMLElement | null;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeModal();
+      if (e.key !== "Tab" || !dialog.current) return;
+      const focusable = dialog.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last?.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first?.focus();
+      }
+    };
     window.addEventListener("keydown", onKey);
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -36,109 +51,127 @@ export default function ProjectDetails({
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = overflow;
+      opener?.focus();
     };
   }, [closeModal]);
 
-  return (
-    <div
-      className="fixed inset-0 z-1000 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm"
+  return createPortal(
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 backdrop-blur-sm sm:p-6"
       onClick={(e) => e.target === e.currentTarget && closeModal()}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
     >
       <motion.div
+        ref={dialog}
         role="dialog"
         aria-modal="true"
         aria-labelledby="project-title"
-        className="relative flex w-full max-w-2xl max-h-[90dvh] flex-col overflow-hidden border shadow-xl rounded-2xl bg-linear-to-l from-midnight to-navy border-white/10"
-        initial={{ opacity: 0, scale: 0.95, y: 12 }}
+        className="relative flex max-h-[90dvh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-white/10 bg-linear-to-b from-navy to-midnight shadow-2xl"
+        initial={{ opacity: 0, scale: 0.96, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
+        exit={{ opacity: 0, scale: 0.97, y: 8 }}
+        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
       >
         <button
           ref={closeButton}
           type="button"
           onClick={closeModal}
           aria-label="Close"
-          className="absolute z-10 p-2 transition-colors rounded-full cursor-pointer top-3 right-3 bg-midnight/80 backdrop-blur hover:bg-gray-600"
+          className="absolute top-3 right-3 z-10 grid size-10 cursor-pointer place-items-center rounded-full bg-midnight/80 backdrop-blur transition-colors hover:bg-storm"
         >
-          <Image src="/assets/close.svg" alt="" width={20} height={20} />
+          <Image src="/assets/close.svg" alt="" width={18} height={18} />
         </button>
 
         <div className="overflow-y-auto overscroll-contain">
-          <div className="relative w-full aspect-video">
+          <div className="relative aspect-video w-full">
             <Image
               src={image}
-              alt={title}
+              alt={`${title} home page`}
               fill
-              sizes="(max-width: 704px) 100vw, 672px"
+              sizes="(max-width: 792px) 100vw, 768px"
               quality={90}
-              className="object-cover"
+              className="object-cover object-top"
             />
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-navy to-transparent" />
           </div>
 
-          <div className="p-5 sm:p-6">
-            <h3
-              id="project-title"
-              className="pr-8 mb-2 text-xl font-bold text-white sm:text-2xl"
-            >
-              {title}
-            </h3>
-            <p className="mb-4 text-neutral-300">{description}</p>
-            <ul className="space-y-2.5 list-disc ps-5 marker:text-sand">
+          <div className="p-6 sm:p-8">
+            <div className="flex items-center gap-3">
+              <Image
+                src={logo}
+                alt=""
+                width={40}
+                height={40}
+                className="rounded-xl"
+              />
+              <div>
+                <h3 id="project-title" className="text-2xl font-bold">
+                  {title}
+                </h3>
+                <p className="text-sm text-neutral-400">{tagline}</p>
+              </div>
+            </div>
+            <p className="mt-5 text-pretty text-neutral-300">{description}</p>
+
+            <h4 className="mt-7 text-sm font-semibold tracking-wider text-sand uppercase">
+              What I built
+            </h4>
+            <ul className="mt-3 space-y-3">
               {subDescription.map((item) => (
                 <li
                   key={item}
-                  className="text-sm sm:text-base text-neutral-400"
+                  className="flex gap-3 text-sm text-pretty text-neutral-400 sm:text-base"
                 >
+                  <span
+                    className="mt-2.5 size-1.5 shrink-0 rounded-full bg-lavender"
+                    aria-hidden="true"
+                  />
                   {item}
                 </li>
               ))}
             </ul>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 mt-6">
-              <ul className="flex flex-wrap gap-2">
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6">
+              <ul className="flex flex-wrap gap-2" aria-label="Built with">
                 {tags.map((tag) => (
-                  <TagChip key={tag.id} tag={tag} />
+                  <li
+                    key={tag.id}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-neutral-200"
+                  >
+                    <Image src={tag.path} alt="" width={16} height={16} />
+                    {tag.name}
+                  </li>
                 ))}
               </ul>
-              {href && (
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-medium hover-animation"
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+              >
+                Visit live site
+                <svg
+                  viewBox="0 0 24 24"
+                  className="size-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
                 >
-                  View Project
-                  <Image
-                    src="/assets/arrow-up.svg"
-                    alt=""
-                    width={16}
-                    height={16}
-                  />
-                </a>
-              )}
+                  <path d="M7 17L17 7M8 7h9v9" />
+                </svg>
+                <span className="sr-only">(opens in a new tab)</span>
+              </a>
             </div>
           </div>
         </div>
       </motion.div>
-    </div>
-  );
-}
-
-function TagChip({ tag }: { tag: Tag }) {
-  const [broken, setBroken] = useState(false);
-  return (
-    <li className="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-full bg-white/5 border border-white/10 text-neutral-200">
-      {!broken && (
-        <Image
-          src={tag.path}
-          alt=""
-          width={18}
-          height={18}
-          onError={() => setBroken(true)}
-          className="rounded-sm"
-        />
-      )}
-      {tag.name}
-    </li>
+    </motion.div>,
+    document.body,
   );
 }

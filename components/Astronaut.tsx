@@ -6,7 +6,7 @@ import { useFrame, type ThreeElements } from "@react-three/fiber";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useMotionValue, useSpring } from "motion/react";
 
-const MODEL = "/models/tenhun_falling_spaceman_fanart.glb";
+const MODEL = "/models/astronaut.glb";
 
 const MESHES = [
   "Cube001_0",

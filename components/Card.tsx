@@ -22,7 +22,8 @@ const Card: React.FC<{
     >
       <Image
         src={image}
-        alt="card"
+        alt=""
+        draggable={false}
         className="object-cover pointer-events-none rounded-md p-0.5"
         width={38}
         height={38}

@@ -34,7 +34,7 @@ export const Frameworks: React.FC = () => {
         ))}
       </OrbitingCircles>
       <OrbitingCircles iconSize={25} radius={100} reverse speed={2}>
-        {skills.reverse().map((skill: string, index: number) => (
+        {[...skills].reverse().map((skill: string, index: number) => (
           <Icon key={index} src={`/assets/logos/${skill}.svg`} />
         ))}
       </OrbitingCircles>
@@ -46,7 +46,7 @@ const Icon = ({ src }: { src: string }) => {
   return (
     <Image
       src={src}
-      alt="icon"
+      alt=""
       className="duration-200 rounded-sm hover:scale-110"
       width={40}
       height={40}

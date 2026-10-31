@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useRef } from "react";
-import Image from "next/image";
 import Card from "@/components/Card";
 import { Globe } from "@/components/Globe";
 import CopyEmailButton from "@/components/CopyEmailButton";
+import CodeWindow from "@/components/CodeWindow";
 import { Frameworks } from "@/components/Frameworks";
 
 const About: React.FC = () => {
@@ -12,17 +12,11 @@ const About: React.FC = () => {
 
   return (
     <section id="about" className="c-space section-spacing">
-      <h2 className="text-heading">About Me</h2>
+      <p className="eyebrow">About</p>
+      <h2 className="text-heading mt-3">About Me</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-72 mt-12">
         <div className="flex items-end grid-default-color grid-1">
-          <Image
-            src="/assets/coding-pov.png"
-            alt="coding pov"
-            className="absolute scale-[1.75] -right-20 -top-4 md:scale-[3] md:left-50 md:inset-y-10 lg:scale-[2.5]"
-            width={1328}
-            height={813}
-            quality={100}
-          />
+          <CodeWindow className="absolute top-[-8%] left-[30%] scale-[0.55] origin-top-left sm:top-[2%] sm:left-[40%] sm:scale-[0.62] md:top-[30%] md:left-[22%] md:scale-90 lg:left-[30%] lg:scale-100" />
           <div className="z-10">
             <p className="headtext">{`Hi, I'm Ali Moghrabi`}</p>
             <p className="subtext">
@@ -31,11 +25,12 @@ const About: React.FC = () => {
               applications.
             </p>
           </div>
-          <div className="absolute inset-x-0 pointer-events-none -bottom-4 h-1/2 sm:h-1/3 bg-linear-to-t from-indigo-950" />
+          <div className="absolute inset-x-0 pointer-events-none -bottom-4 h-1/2 sm:h-1/3 bg-linear-to-t from-indigo-950 via-indigo-950/70 max-md:h-2/3" />
         </div>
         <div
           ref={grid2Container}
           className="grid-default-color grid-2 select-none"
+          aria-label="Tech logos you can drag around"
         >
           <div className="flex items-center justify-center w-full h-full">
             <p className="flex items-end text-center text-5xl text-gray-500 uppercase">
@@ -208,7 +203,7 @@ const About: React.FC = () => {
         <div className="grid-special-color grid-4">
           <div className="flex flex-col items-center justify-center gap-4 size-full">
             <p className="text-center headtext">
-              Do you want to start a project together ?
+              Do you want to start a project together?
             </p>
             <CopyEmailButton />
           </div>

@@ -1,26 +1,62 @@
-import React from "react";
-import { mySocials } from "../constants";
 import Image from "next/image";
+import Link from "next/link";
+import { EMAIL, mySocials, navLinks } from "@/constants";
 
-const Footer: React.FC = () => {
+export default function Footer() {
   return (
-    <section className="flex flex-wrap items-center justify-between gap-5 pb-5 text-sm text-neutral-400 c-space">
-      <div className="mb-4 bg-linear-to-r from-transparent via-neutral-700 to-transparent h-px w-full" />
-      <div className="flex gap-2">
-        <p>Terms & Conditions</p>
-        <p>|</p>
-        <p>Privacy Policy</p>
-      </div>
-      <div className="flex gap-3">
-        {mySocials.map((social, index) => (
-          <a key={index} href={social.href} target="_blank" title={social.name}>
-            <Image src={social.icon} alt={social.name} width={20} height={20} />
+    <footer className="c-space pb-8 text-sm text-neutral-400">
+      <div className="mb-8 h-px w-full bg-linear-to-r from-transparent via-neutral-700 to-transparent" />
+      <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+        <div>
+          <Link href="/" className="text-xl font-bold text-white">
+            Ali<span className="text-lavender">.</span>
+          </Link>
+          <p className="mt-2 max-w-xs">
+            Full-stack web developer building fast, secure web apps.
+          </p>
+          <a
+            href={`mailto:${EMAIL}`}
+            className="mt-2 inline-block text-neutral-300 underline-offset-4 hover:text-white hover:underline"
+          >
+            {EMAIL}
           </a>
-        ))}
-      </div>
-      <p>© {new Date().getFullYear()} Ali. All rights reserved.</p>
-    </section>
-  );
-};
+        </div>
 
-export default Footer;
+        <nav aria-label="Footer">
+          <ul className="flex flex-wrap gap-x-6 gap-y-2">
+            {navLinks.map(({ id, label }) => (
+              <li key={id}>
+                <Link
+                  href={`/#${id}`}
+                  className="transition-colors hover:text-white"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <ul className="flex gap-2">
+          {mySocials.map((social) => (
+            <li key={social.name}>
+              <a
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${social.name} (opens in a new tab)`}
+                className="grid size-10 place-items-center rounded-full border border-white/10 bg-white/5 transition hover:-translate-y-0.5 hover:border-white/25"
+              >
+                <Image src={social.icon} alt="" width={18} height={18} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="mt-8 flex flex-col gap-2 text-xs text-neutral-500 sm:flex-row sm:justify-between">
+        <p>© {new Date().getFullYear()} Ali Moghrabi. All rights reserved.</p>
+        <p>Built with Next.js, Three.js and Tailwind CSS.</p>
+      </div>
+    </footer>
+  );
+}

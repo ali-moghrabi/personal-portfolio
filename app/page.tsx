@@ -6,12 +6,14 @@ import Projects from "@/sections/Projects";
 
 export default function Home() {
   return (
-    <div>
+    <>
       <Hero />
-      <About />
-      <Projects />
-      <Contact />
-      <Footer />
-    </div>
+      <div className="mx-auto max-w-7xl">
+        <About />
+        <Projects />
+        <Contact />
+        <Footer />
+      </div>
+    </>
   );
 }
