@@ -91,14 +91,15 @@ export default function ProjectCard({ project }: { project: Project }) {
               ))}
             </ul>
 
-            <div className="mt-auto flex flex-wrap items-center gap-3 pt-8 max-sm:*:flex-1">
+            <div className="mt-auto flex flex-wrap items-center gap-1.5 sm:gap-2.5 pt-8 max-sm:*:flex-1">
               <a
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary"
               >
-                Visit live site
+                <span className="sm:hidden">Visit site</span>
+                <span className="hidden sm:inline">Visit live site</span>
                 <svg
                   viewBox="0 0 24 24"
                   className="size-4"
