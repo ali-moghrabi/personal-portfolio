@@ -5,6 +5,7 @@ export default function Projects() {
   return (
     <section
       id="projects"
+      data-palette="projects"
       aria-labelledby="projects-title"
       className="relative c-space section-spacing"
     >

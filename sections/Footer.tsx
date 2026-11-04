@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import LiquidChrome from "@/components/LiquidChrome";
 import { EMAIL, mySocials, navLinks } from "@/constants";
 
 export default function Footer() {
@@ -53,9 +54,18 @@ export default function Footer() {
           ))}
         </ul>
       </div>
-      <div className="mt-8 flex flex-col gap-2 text-xs text-neutral-500 sm:flex-row sm:justify-between">
+      {/* the logo in liquid chrome, after collidingScopes/liquid-logo */}
+      <Link href="/" aria-label="Back to the top" className="mt-12 block">
+        <LiquidChrome
+          text="ALI."
+          align="center"
+          weight={800}
+          className="h-[30vw] max-h-80 w-full"
+        />
+      </Link>
+      <div className="mt-6 flex flex-col gap-2 text-xs text-neutral-500 sm:flex-row sm:justify-between">
         <p>© {new Date().getFullYear()} Ali Moghrabi. All rights reserved.</p>
-        <p>Built with Next.js, Three.js and Tailwind CSS.</p>
+        <p>Built with Next.js, React Three Fiber and Tailwind CSS.</p>
       </div>
     </footer>
   );

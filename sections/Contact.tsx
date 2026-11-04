@@ -14,6 +14,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { sendContact } from "@/app/actions/contact";
 import { Particles } from "@/components/Particles";
 import CopyEmailButton from "@/components/CopyEmailButton";
+import LiquidGlass from "@/components/LiquidGlass";
 import { EMAIL, mySocials } from "@/constants";
 import {
   LIMITS,
@@ -31,8 +32,9 @@ export default function Contact() {
   return (
     <section
       id="contact"
+      data-palette="contact"
       aria-labelledby="contact-title"
-      className="relative c-space section-spacing flex items-center py-16 md:py-24"
+      className="relative isolate c-space section-spacing flex items-center py-16 md:py-24"
     >
       <Particles
         className="absolute inset-0 -z-50"
@@ -70,7 +72,8 @@ export default function Contact() {
           </div>
         </div>
 
-        <div className="glass-card relative w-full p-6 sm:p-8">
+        <div className="relative isolate w-full rounded-[2rem] p-6 sm:p-8">
+          <LiquidGlass radius={32} strength={56} blur={10} />
           <ContactForm key={round} onReset={() => setRound((r) => r + 1)} />
         </div>
       </div>

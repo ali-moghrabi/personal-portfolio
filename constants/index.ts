@@ -70,6 +70,7 @@ export const mySocials = [
 export const navLinks = [
   { id: "home", label: "Home" },
   { id: "about", label: "About" },
+  { id: "process", label: "Process" },
   { id: "projects", label: "Projects" },
   { id: "contact", label: "Contact" },
 ] as const;

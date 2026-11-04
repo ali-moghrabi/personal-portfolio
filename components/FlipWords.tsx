@@ -8,10 +8,13 @@ export function FlipWords({
   words,
   duration = 3000,
   className,
+  letterClassName,
 }: {
   words: string[];
   duration?: number;
   className?: string;
+  /** per letter, e.g. a background-clip gradient that must sit on the letters themselves */
+  letterClassName?: string;
 }) {
   const [index, setIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -52,7 +55,7 @@ export function FlipWords({
               initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               transition={{ delay: i * 0.05, duration: 0.2 }}
-              className="inline-block"
+              className={twMerge("inline-block", letterClassName)}
             >
               {letter}
             </motion.span>

@@ -15,25 +15,25 @@
     "@vercel/speed-insights": "^2.0.0",
     "cobe": "^2.0.1",
     "maath": "^0.10.8",
-    "motion": "^14.3.0",
-    "next": "^16.4.2",
+    "motion": "^14.9.1",
+    "next": "^16.4.5",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "tailwind-merge": "^3.7.0",
-    "three": "^0.186.1"
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^26",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@types/three": "^0.186.0",
+    "@types/three": "^0.187.0",
     "eslint": "^10",
-    "eslint-config-next": "^16.4.2",
+    "eslint-config-next": "^16.4.5",
     "tailwindcss": "^4",
     "typescript": "^6.0.3"
   },
   "engines": {
-   "node": "24.x"
+    "node": "24.x"
   }
 }

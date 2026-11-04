@@ -1,8 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type PointerEvent } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useSpring,
+} from "motion/react";
 import ProjectDetails from "./ProjectDetails";
 import type { Project } from "@/constants";
 
@@ -11,6 +17,29 @@ export default function ProjectCard({ project }: { project: Project }) {
   const { title, tagline, description, highlights, href, logo, image, tags } =
     project;
 
+  // a gentle 3D tilt and a light that follows the pointer
+  const px = useMotionValue(0.5);
+  const py = useMotionValue(0.5);
+  const rotateY = useSpring(0, { stiffness: 150, damping: 20 });
+  const rotateX = useSpring(0, { stiffness: 150, damping: 20 });
+  const light = useMotionTemplate`radial-gradient(600px circle at calc(${px} * 100%) calc(${py} * 100%), rgb(255 255 255 / 0.1), transparent 45%)`;
+
+  const onMove = (e: PointerEvent<HTMLElement>) => {
+    if (e.pointerType !== "mouse") return;
+    const box = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - box.left) / box.width;
+    const y = (e.clientY - box.top) / box.height;
+    px.set(x);
+    py.set(y);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    rotateY.set((x - 0.5) * 5);
+    rotateX.set((0.5 - y) * 4);
+  };
+  const onLeave = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+
   return (
     <>
       <motion.article
@@ -18,8 +47,16 @@ export default function ProjectCard({ project }: { project: Project }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="group glass-card overflow-hidden"
+        onPointerMove={onMove}
+        onPointerLeave={onLeave}
+        style={{ rotateX, rotateY, transformPerspective: 1400 }}
+        className="group glass-card chrome-frame relative overflow-hidden"
       >
+        <motion.span
+          aria-hidden="true"
+          style={{ background: light }}
+          className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        />
         <button
           type="button"
           onClick={() => setOpen(true)}

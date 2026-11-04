@@ -11,7 +11,7 @@ const About: React.FC = () => {
   const grid2Container = useRef(null);
 
   return (
-    <section id="about" className="c-space section-spacing">
+    <section id="about" data-palette="about" className="c-space section-spacing">
       <p className="eyebrow">About</p>
       <h2 className="text-heading mt-3">About Me</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-72 mt-12">
@@ -25,7 +25,7 @@ const About: React.FC = () => {
               applications.
             </p>
           </div>
-          <div className="absolute inset-x-0 pointer-events-none -bottom-4 h-1/2 sm:h-1/3 bg-linear-to-t from-indigo-950 via-indigo-950/70 max-md:h-2/3" />
+          <div className="absolute inset-x-0 pointer-events-none -bottom-4 h-1/2 sm:h-1/3 rounded-b-3xl bg-linear-to-t from-black/80 via-black/45 max-md:h-2/3" />
         </div>
         <div
           ref={grid2Container}
